@@ -2,20 +2,19 @@ package com.mczapiewski.fullstackproject.model;
 
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
 import javax.persistence.Id;
 
 @Entity
+
 public class User {
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @GeneratedValue
 
     private int id;
     private String name;
     private String surname;
-    private String dateOfBirth;
-    private String login;
-    private boolean isDeleted;
+    private String email;
+    private String password;
 
     public User() {
     }
@@ -44,27 +43,19 @@ public class User {
         this.surname = surname;
     }
 
-    public String getDateOfBirth() {
-        return dateOfBirth;
+    public String getEmail() {
+        return email;
     }
 
-    public void setDateOfBirth(String dateOfBirth) {
-        this.dateOfBirth = dateOfBirth;
+    public void setEmail(String email) {
+        this.email = email;
     }
 
-    public String getLogin() {
-        return login;
+    public String getPassword() {
+        return password;
     }
 
-    public void setLogin(String login) {
-        this.login = login;
-    }
-
-    public boolean isDeleted() {
-        return isDeleted;
-    }
-
-    public void setDeleted(boolean deleted) {
-        isDeleted = deleted;
+    public void setPassword(String password) {
+        this.password = password;
     }
 }

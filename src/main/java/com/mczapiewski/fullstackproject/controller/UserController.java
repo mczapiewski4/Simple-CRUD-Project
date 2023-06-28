@@ -1,64 +1,50 @@
 package com.mczapiewski.fullstackproject.controller;
 
 import com.mczapiewski.fullstackproject.model.User;
-import com.mczapiewski.fullstackproject.service.UserService;
-import com.mczapiewski.fullstackproject.service.UserServiceImplementation;
+import com.mczapiewski.fullstackproject.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-
 import java.util.List;
-import java.util.NoSuchElementException;
+
 
 @RestController
-@RequestMapping("/user")
+@RequestMapping("/api")
 @CrossOrigin
 
 public class UserController {
 
     @Autowired
-    private UserService userService;
+    private UserRepository userRepository;
 
-    @Autowired
-    private UserServiceImplementation userServiceImplementation;
-
-    @PostMapping("/add")
-    public String add(@RequestBody User user) {
-        userService.saveUser(user);
-        return "New user is added";
-    }
-
-    @GetMapping("/getAll")
-    public List<User> getAllUsers() {
-        return userService.getAllUsers();
+    @GetMapping("/")
+    public List<User> GetUsers() {
+        return userRepository.findAll();
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<User> get(@PathVariable Integer id) {
-        try {
-            User user = userService.getUser(id);
-            return new ResponseEntity<User>(user, HttpStatus.OK);
-        } catch (NoSuchElementException e) {
-            return new ResponseEntity<User>(HttpStatus.NOT_FOUND);
-        }
+    public User GetUser(@PathVariable Integer id) {
+        return userRepository.findById(id).orElse(null);
     }
 
-    @PutMapping("/{id}")
-    public ResponseEntity<User> update(@RequestBody User user, @PathVariable Integer id) {
-        try {
-            User existingUser = userService.getUser(id);
-            userService.saveUser(user);
-            return new ResponseEntity<>(HttpStatus.OK);
-        } catch (NoSuchElementException e) {
-            return new ResponseEntity<User>(HttpStatus.NOT_FOUND);
-        }
+    @PostMapping("/")
+    public User PostUser(@RequestBody User user) {
+        return userRepository.save(user);
     }
 
-    // trochę na około z tym userServiceImplementation
+    @PutMapping("/")
+    public User PutUser(@RequestBody User user) {
+        User oldUser = userRepository.findById(user.getId()).orElse(null);
+        oldUser.setName(user.getName());
+        oldUser.setSurname(user.getSurname());
+        oldUser.setEmail(user.getEmail());
+        oldUser.setPassword(user.getPassword());
+        return userRepository.save(oldUser);
+    }
+
     @DeleteMapping("/{id}")
-    public String delete(@PathVariable Integer id) {
-        userServiceImplementation.deleteUser(id);
-        return "Deleted User with id " + id;
+    public Integer DeleteUser(@PathVariable Integer id) {
+        userRepository.deleteById(id);
+        return id;
     }
+
 }
